@@ -4,6 +4,7 @@ import {
     REGISTER_USER,
     AUTH_USER,
     LOGOUT_USER,
+    ADD_TO_CART,
 } from './types';
 import { USER_SERVER } from '../components/Config.js';
 
@@ -45,5 +46,21 @@ export function logoutUser(){
         type: LOGOUT_USER,
         payload: request
     }
+}
+
+export function addToCart(id) {
+
+    let body = {
+        productId: id
+    }
+
+    const request = axios.post(`${USER_SERVER}/addToCart`, body)
+        .then(response => response.data);
+
+    return {
+        type: ADD_TO_CART,
+        payload: request
+    }
+
 }
 

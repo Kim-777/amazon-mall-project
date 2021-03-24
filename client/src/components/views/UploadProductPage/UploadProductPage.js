@@ -53,7 +53,7 @@ function UploadProductPage(props) {
 
         const body = {
             writer: props.user.userData._id,
-            title: Title,
+            title: Name,
             description: Description,
             price: Price,
             continents: Continent,

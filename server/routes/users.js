@@ -18,6 +18,8 @@ router.get("/auth", auth, (req, res) => {
         lastname: req.user.lastname,
         role: req.user.role,
         image: req.user.image,
+        cart: req.user.cart,
+        history: req.user.history
     });
 });
 
@@ -67,5 +69,52 @@ router.get("/logout", auth, (req, res) => {
         });
     });
 });
+
+router.post("/addToCart", auth, (req, res) => {
+
+    // 먼저 User Collection에 해당 유저의 정보를 가져옵니다.
+    User.findOne({_id: req.user._id}, 
+        (err, userInfo) => {
+
+            let duplicate = false;
+
+            userInfo.cart.forEach((item) => {
+                if(item.id === req.body.productId) {
+                    duplicate = true;
+                }
+            })
+
+            if(duplicate) {
+                User.findOneAndUpdate({_id: req.user._id, "cart.id": req.body.productId},
+                {$inc : {"cart.$.quantity": 1}},
+                {new: true},
+                (err, userInfo) => {
+                    if(err) return res.status(400).json({success: false, err});
+                    return res.status(200).send(userInfo.cart)
+                }
+                )
+            } else {
+                User.findOneAndUpdate(
+                    {_id: req.user._id},
+                    {
+                        $push: {
+                            cart: {
+                                id: req.body.productId,
+                                quantity: 1,
+                                data: Date.now()
+                            }
+                        }
+                    },
+                    {new: true},
+                    (err, userInfo) => {
+                        if(err) return res.status(400).json({success: false, err});
+                        return res.status(200).send(userInfo.cart);
+                    }
+                )
+            }
+
+        })
+
+})
 
 module.exports = router;
