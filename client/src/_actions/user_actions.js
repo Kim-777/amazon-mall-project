@@ -4,9 +4,6 @@ import {
     REGISTER_USER,
     AUTH_USER,
     LOGOUT_USER,
-    ADD_TO_CART,
-    GET_CART_ITEMS,
-    REMOVE_CART_ITEM,
 } from './types';
 import { USER_SERVER } from '../components/Config.js';
 
@@ -46,70 +43,6 @@ export function logoutUser(){
 
     return {
         type: LOGOUT_USER,
-        payload: request
-    }
-}
-
-export function addToCart(id) {
-
-    let body = {
-        productId: id
-    }
-
-    const request = axios.post(`${USER_SERVER}/addToCart`, body)
-        .then(response => response.data);
-
-    return {
-        type: ADD_TO_CART,
-        payload: request
-    }
-
-}
-
-export function getCartItems(cartItems, userCart) {
-
-    const request = axios.get(`/api/product/product_by_id?id=${cartItems}&type=array`)
-        .then(response => {
-
-            userCart.forEach(cartItem => {
-
-                response.data.forEach((productDetail, index) => {
-                    if(cartItem.id === productDetail._id) {
-                        response.data[index].quantity = cartItem.quantity;
-                    }
-                })
-
-            })
-
-            return response.data;
-
-        })
-
-    return {
-        type: GET_CART_ITEMS,
-        payload: request
-    }
-
-}
-
-
-export function removeCartItem(productId) {
-
-    const request = axios.get(`/api/users/removeFromCart?id=${productId}`)
-        .then(response => {
-                response.data.cart.forEach(item => {
-                    response.data.productInfo.forEach((product, index) => {
-                        if(item.id === product._id) {
-                            response.data.productInfo[index].quantity = item.quantity
-                        }
-                    })
-                })
-
-                return response.data
-        });
-
-    return {
-        type: REMOVE_CART_ITEM,
         payload: request
     }
 }
