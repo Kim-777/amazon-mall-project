@@ -5,7 +5,7 @@ import Currency from 'react-currency-formatter';
 import { useDispatch } from 'react-redux';
 import { 
     addToBasket,
-}from '../slices/basketSlice';
+} from '../slices/basketSlice';
 
 const MAX_RATING = 5;
 const MIN_RATING = 1;
@@ -28,6 +28,8 @@ const Product = ({ id, title, price, description, category, image }) => {
             description,
             category,
             image,
+            rating,
+            hasPrime
         };
 
         dispatch(addToBasket(product));
